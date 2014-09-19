@@ -41,8 +41,125 @@ namespace {
 			_fusion.init();
 		}
 
-		void readSensor(const std::string& sensorFile) {
+		bool toLinearAcceleration(const std::string& orig) {
+			size_t lastSlash = orig.find_last_of('\\');
+			std::string fixed;
+			static const char *const prefix = "linearized_";
+			if (std::string::npos == lastSlash)
+				fixed = prefix + orig;
+			else
+				fixed = orig.substr(0, lastSlash) + "\\linearized_" + 
+				orig.substr(lastSlash + 1);
 
+			std::ifstream fstream;
+			fstream.open(orig);
+			if (!fstream.is_open()) {
+				assert(false && "No input file...");
+				return false;
+			}
+#pragma warning(suppress:4996)
+			FILE *tmp = fopen(fixed.c_str(), "w");
+			if (nullptr == tmp) {
+				assert(false && "Cannot create output file...");
+				fstream.close();
+				return false;
+			}
+			fclose(tmp);
+
+			std::ofstream wstream;
+			wstream.open(fixed, std::ofstream::out | std::ofstream::trunc);
+			if (!wstream.is_open()) {
+				assert(false && "Cannot open output file...");
+				fstream.close();
+				return false;
+			}
+
+			fstream.seekg(0, fstream.beg);
+			wstream.seekp(0, wstream.beg);
+
+			std::string line;
+			std::getline(fstream, line); // header
+			static const char header[] = "Timestamp, LinAccX, LinAccY, LinAccZ, GyroX, GyroY, GyroZ\n";
+			wstream.write(header, strlen(header));
+
+			std::stringstream ss;
+			float x, y, z;
+			int64_t ts;
+			int64_t base_ts = 0;
+			while (std::getline(fstream, line, ',')) {
+
+				for (int i = 0; i < 83; ++i) { std::getline(fstream, line, ','); } // to get to l.thigh group of cols
+
+				std::stringstream ss4(line);
+				ss4 >> ts;
+
+				for (int i = 0; i < 15; ++i) { std::getline(fstream, line, ','); } // to skip 'raw' values
+
+				enum { ACC_DATA, GYR_DATA, MAG_DATA };
+				short dtypes[] = { ACC_DATA, GYR_DATA, MAG_DATA };
+
+				bool toWrite = hasEstimate();
+
+				// start with zero timestamp
+				if (toWrite && 0 == base_ts)
+					base_ts = ts;
+				ts -= base_ts;
+				if (toWrite)
+					wstream << ts << ',';
+
+				for (short dtype : dtypes) {
+
+					std::getline(fstream, line, ',');
+					std::stringstream ss1(line);
+					ss1 >> x;
+					std::getline(fstream, line, ',');
+					std::stringstream ss2(line);
+					ss2 >> y;
+					std::getline(fstream, line, ',');
+					std::stringstream ss3(line);
+					ss3 >> z;
+
+					Vec3 plain_v(x, y, z);
+					const vec3_t v(&plain_v[0]);
+
+					if (toWrite && MAG_DATA != dtype) {
+						if (ACC_DATA == dtype)
+							plain_v = excludeGVector(plain_v);
+						wstream << plain_v[0] << ',' << plain_v[1] << ',' << plain_v[2];
+						if (ACC_DATA == dtype)
+							wstream << ',';
+					}
+
+					switch(dtype) {
+					case ACC_DATA:
+						_fusion.handleAcc(v);
+						break;
+					case GYR_DATA:
+						if (_gyroTimestamp != 0) {
+							const float dT = (ts - _gyroTimestamp) / 1000000000.0f;
+							_fusion.handleGyro(v, dT);
+
+							// here we estimate the gyro rate (useful for debugging)
+							const float freq = 1 / dT;
+							if (freq >= 100 && freq < 1000) {		// filter values obviously wrong
+								const float alpha = 1 / (1 + dT);	// 1s time-constant
+								_gyroRateEstimation = freq + (_gyroRateEstimation - freq) * alpha;
+							}
+						}
+						_gyroTimestamp = ts;
+						break;
+					case MAG_DATA:
+						_fusion.handleMag(v);
+						break;
+					}
+				}
+				std::getline(fstream, line);
+				if (toWrite)
+					wstream.put('\n');
+			}
+			wstream.close();
+			fstream.close();
+			return true;
 		}
 
 		void readSensors(const std::string& accFile, const std::string& gyroFile, const std::string& magFile) {
@@ -131,39 +248,38 @@ namespace {
 			return Vec3(g.x, g.y, g.z);
 		}
 
+		Vec3 excludeGVector(const Vec3& acceleration) {
+			Vec3 linAcc = VEC3_ZERO;
+			if (!hasEstimate())
+				return linAcc;
+			for (int i = 0; i < Vec3::dim; ++i) {
+				linAcc[i] = acceleration[i] - getGravityEstimation()[i];
+			}
+			return linAcc;
+		}
+
 		bool hasEstimate() const { return _fusion.hasEstimate(); }
 		mat33_t getRotationMatrix() const { return _fusion.getRotationMatrix(); }
 
 		Fusion _fusion;
 	};
-
-	Vec3 excludeGVector(const Vec3& acceleration, const Vec3& gravityVec) {
-		Vec3 linAcc = VEC3_ZERO;
-		for (int i = 0; i < Vec3::dim; ++i) {
-			linAcc[i] = acceleration[i] - gravityVec[i];
-		}
-		return linAcc;
-	}
 }
 
 
 int main(int /*argc*/, char** /*argv*/) {
 
-	Vec3 acc;
-	Vec3 gyr;
-	Vec3 mag;
-
 	SensorFusion fusion;
-	fusion.readSensors("..\\..\\data\\ACC_2014_09_17_14_24_49.csv",
-		"..\\..\\data\\GYR_2014_09_17_14_24_49.csv",
-		"..\\..\\data\\MAG_2014_09_17_14_24_49.csv");
+	fusion.toLinearAcceleration("..\\..\\data\\20110507-131228-JXL_SQ_trial2.csv");
+
+//	fusion.readSensors("..\\..\\data\\ACC_2014_09_17_14_24_49.csv",
+//		"..\\..\\data\\GYR_2014_09_17_14_24_49.csv",
+//		"..\\..\\data\\MAG_2014_09_17_14_24_49.csv");
 
 //	fusion.readSensors("..\\..\\data\\ACC_2014_09_17_14_25_22.csv",
 //		"..\\..\\data\\GYR_2014_09_17_14_25_22.csv",
 //		"..\\..\\data\\MAG_2014_09_17_14_25_22.csv");
 
-	Vec3 gravity = fusion.getGravityEstimation();
-	Vec3 linAcc = excludeGVector(acc, gravity);
+//	Vec3 gravity = fusion.getGravityEstimation();
 
 	return 0;
 }
