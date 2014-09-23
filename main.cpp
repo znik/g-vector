@@ -103,9 +103,9 @@ namespace {
 				// start with zero timestamp
 				if (toWrite && 0 == base_ts)
 					base_ts = ts;
-				ts -= base_ts;
+				//ts -= base_ts;
 				if (toWrite)
-					wstream << ts << ',';
+					wstream << ts - base_ts << ',';
 
 				for (short dtype : dtypes) {
 
