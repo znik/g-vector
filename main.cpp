@@ -24,7 +24,12 @@ struct Vec3 {
 	float operator[](int idx) const { assert(idx < dim && 0 <= idx && "Idx error"); return _c[idx]; }
 private:
 	float _c[dim];
+	friend bool operator== (const Vec3&, const Vec3&);
 };
+
+bool operator==(const Vec3& a, const Vec3& b) {
+	return a[0] == b[0] && a[1] == b[1] && a[2] == b[2];
+}
 
 #define VEC3_ZERO	Vec3()
 
@@ -36,9 +41,12 @@ namespace {
 		int64_t		_gyroTimestamp;
 		float		_gyroRateEstimation;
 
+		std::auto_ptr<Vec3>	_g_estimation;
+
 		// gyro rate estimation -- 200 Hz
 		SensorFusion() : _gyroTimestamp(0), _gyroRateEstimation(200) {
-			_fusion.init();
+			_fusion.reset(new Fusion());
+			_fusion->init();
 		}
 
 		bool toLinearAcceleration(const std::string& orig) {
@@ -80,12 +88,14 @@ namespace {
 			std::string line;
 			std::getline(fstream, line); // header
 			static const char header[] = "Timestamp, LinAccX, LinAccY, LinAccZ, GyroX, GyroY, GyroZ\n";
+			//static const char header[] = "Timestamp, LinAccX, LinAccY, LinAccZ, GyroX, GyroY, GyroZ, G_X, G_Y, G_Z\n";
 			wstream.write(header, strlen(header));
 
 			std::stringstream ss;
 			float x, y, z;
 			int64_t ts;
 			int64_t base_ts = 0;
+			int index = 0;
 			while (std::getline(fstream, line, ',')) {
 
 				for (int i = 0; i < 83; ++i) { std::getline(fstream, line, ','); } // to get to l.thigh group of cols
@@ -99,11 +109,10 @@ namespace {
 				short dtypes[] = { ACC_DATA, GYR_DATA, MAG_DATA };
 
 				bool toWrite = hasEstimate();
-
 				// start with zero timestamp
 				if (toWrite && 0 == base_ts)
 					base_ts = ts;
-				//ts -= base_ts;
+
 				if (toWrite)
 					wstream << ts - base_ts << ',';
 
@@ -119,25 +128,40 @@ namespace {
 					std::stringstream ss3(line);
 					ss3 >> z;
 
+					if (((index++) % 300) == 0 && hasEstimate()) {
+						const Vec3& estimation = getGravityEstimation();
+						_g_estimation.reset(new Vec3(estimation));
+						_fusion.reset(new Fusion());
+						_gyroTimestamp = 0;
+					}
+
 					Vec3 plain_v(x, y, z);
 					const vec3_t v(&plain_v[0]);
 
 					if (toWrite && MAG_DATA != dtype) {
+
 						if (ACC_DATA == dtype)
 							plain_v = excludeGVector(plain_v);
 						wstream << plain_v[0] << ',' << plain_v[1] << ',' << plain_v[2];
 						if (ACC_DATA == dtype)
 							wstream << ',';
+						//
+						//if (GYR_DATA == dtype) {
+						//	Vec3 g = getGravityEstimation();
+						//	if (VEC3_ZERO == g)
+						//		g = *_g_estimation;
+						//	wstream << ',' << g[0] << ',' << g[1] << ',' << g[2];
+						//}
 					}
 
 					switch(dtype) {
 					case ACC_DATA:
-						_fusion.handleAcc(v);
+						_fusion->handleAcc(v);
 						break;
 					case GYR_DATA:
 						if (_gyroTimestamp != 0) {
 							const float dT = (ts - _gyroTimestamp) / 1000000000.0f;
-							_fusion.handleGyro(v, dT);
+							_fusion->handleGyro(v, dT);
 
 							// here we estimate the gyro rate (useful for debugging)
 							const float freq = 1 / dT;
@@ -149,7 +173,7 @@ namespace {
 						_gyroTimestamp = ts;
 						break;
 					case MAG_DATA:
-						_fusion.handleMag(v);
+						_fusion->handleMag(v);
 						break;
 					}
 				}
@@ -174,29 +198,34 @@ namespace {
 
 		Vec3 excludeGVector (const Vec3& acceleration) const {
 			Vec3 linAcc = VEC3_ZERO;
-			if (!hasEstimate()) {
+			if (!hasEstimate() && 0 == _g_estimation.get()) {
 				assert(false && "Called before having an actual estimation");
 				return linAcc;
 			}
-			const Vec3& g = getGravityEstimation();
+			Vec3 g;
+			if (hasEstimate())
+				g = getGravityEstimation();
+			else
+				g = *_g_estimation;
 			for (int i = 0; i < Vec3::dim; ++i) {
 				linAcc[i] = acceleration[i] - g[i];
 			}
 			return linAcc;
 		}
 
-		inline bool hasEstimate() const { return _fusion.hasEstimate(); }
-		inline mat33_t getRotationMatrix() const { return _fusion.getRotationMatrix(); }
+		inline bool hasEstimate() const { return _fusion->hasEstimate(); }
+		inline mat33_t getRotationMatrix() const { return _fusion->getRotationMatrix(); }
 
-		Fusion _fusion;
+		std::auto_ptr<Fusion> _fusion;
 	};
-}
+};
 
 
 int main(int /*argc*/, char** /*argv*/) {
 
 	SensorFusion fusion;
-	fusion.toLinearAcceleration("..\\..\\data\\20110507-131228-JXL_SQ_trial2.csv");
+	//fusion.toLinearAcceleration("..\\..\\data\\20110507-131228-JXL_SQ_trial2.csv");
+	fusion.toLinearAcceleration("..\\..\\data\\20110507-122357-JXL_ITDS_trial1.csv");
 
 //	fusion.readSensors("..\\..\\data\\ACC_2014_09_17_14_24_49.csv",
 //		"..\\..\\data\\GYR_2014_09_17_14_24_49.csv",
