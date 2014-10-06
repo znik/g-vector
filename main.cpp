@@ -88,7 +88,6 @@ namespace {
 			std::string line;
 			std::getline(fstream, line); // header
 			static const char header[] = "Timestamp, LinAccX, LinAccY, LinAccZ, GyroX, GyroY, GyroZ\n";
-			//static const char header[] = "Timestamp, LinAccX, LinAccY, LinAccZ, GyroX, GyroY, GyroZ, G_X, G_Y, G_Z\n";
 			wstream.write(header, strlen(header));
 
 			std::stringstream ss;
@@ -108,7 +107,7 @@ namespace {
 				enum { ACC_DATA, GYR_DATA, MAG_DATA };
 				short dtypes[] = { ACC_DATA, GYR_DATA, MAG_DATA };
 
-				bool toWrite = hasEstimate();
+				bool toWrite = hasEstimate() || 0 != _g_estimation.get();
 				// start with zero timestamp
 				if (toWrite && 0 == base_ts)
 					base_ts = ts;
@@ -145,13 +144,6 @@ namespace {
 						wstream << plain_v[0] << ',' << plain_v[1] << ',' << plain_v[2];
 						if (ACC_DATA == dtype)
 							wstream << ',';
-						//
-						//if (GYR_DATA == dtype) {
-						//	Vec3 g = getGravityEstimation();
-						//	if (VEC3_ZERO == g)
-						//		g = *_g_estimation;
-						//	wstream << ',' << g[0] << ',' << g[1] << ',' << g[2];
-						//}
 					}
 
 					switch(dtype) {
@@ -234,8 +226,6 @@ int main(int /*argc*/, char** /*argv*/) {
 //	fusion.readSensors("..\\..\\data\\ACC_2014_09_17_14_25_22.csv",
 //		"..\\..\\data\\GYR_2014_09_17_14_25_22.csv",
 //		"..\\..\\data\\MAG_2014_09_17_14_25_22.csv");
-
-//	Vec3 gravity = fusion.getGravityEstimation();
 
 	return 0;
 }
