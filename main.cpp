@@ -12,6 +12,9 @@
 
 #include "mat.h"
 #include "vec.h"
+#include "windows.h"
+#include "shlwapi.h"
+#include <tchar.h>
 
 
 #define GRAVITY_EARTH	9.80665f
@@ -52,7 +55,7 @@ namespace {
 		bool toLinearAcceleration(const std::string& orig) {
 			size_t lastSlash = orig.find_last_of('\\');
 			std::string fixed;
-			static const char *const prefix = "linearized_";
+			static const char *const prefix = "\\linearized_";
 			if (std::string::npos == lastSlash)
 				fixed = prefix + orig;
 			else
@@ -127,7 +130,7 @@ namespace {
 					std::stringstream ss3(line);
 					ss3 >> z;
 
-					if (((index++) % 300) == 0 && hasEstimate()) {
+					if (((index++) % (3*65)) == 0 && hasEstimate()) {
 						const Vec3& estimation = getGravityEstimation();
 						_g_estimation.reset(new Vec3(estimation));
 						_fusion.reset(new Fusion());
@@ -212,12 +215,53 @@ namespace {
 	};
 };
 
+void FindFilesRecursively(LPCTSTR lpFolder, LPCTSTR lpFilePattern)
+{
+    TCHAR szFullPattern[MAX_PATH];
+    WIN32_FIND_DATA FindFileData;
+    HANDLE hFindFile;
+    // first we are going to process any subdirectories
+    PathCombine(szFullPattern, lpFolder, _T("*"));
+    hFindFile = FindFirstFile(szFullPattern, &FindFileData);
+    if(hFindFile != INVALID_HANDLE_VALUE)
+    {
+        do
+        {
+            if(FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+            {
+                // found a subdirectory; recurse into it
+				if (FindFileData.cFileName[0] == '.')
+					continue;
+                PathCombine(szFullPattern, lpFolder, FindFileData.cFileName);
+                FindFilesRecursively(szFullPattern, lpFilePattern);
+
+            }
+        } while(FindNextFile(hFindFile, &FindFileData));
+        FindClose(hFindFile);
+    }
+    // now we are going to look for the matching files
+    PathCombine(szFullPattern, lpFolder, lpFilePattern);
+    hFindFile = FindFirstFile(szFullPattern, &FindFileData);
+    if(hFindFile != INVALID_HANDLE_VALUE)
+    {
+        do
+        {
+            if(!(FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+            {
+                // found a file; do something with it
+                PathCombine(szFullPattern, lpFolder, FindFileData.cFileName);
+                _tprintf_s(_T("%s\n"), szFullPattern);
+				SensorFusion fusion;
+				fusion.toLinearAcceleration(szFullPattern);
+            }
+        } while(FindNextFile(hFindFile, &FindFileData));
+        FindClose(hFindFile);
+    }
+}
 
 int main(int /*argc*/, char** /*argv*/) {
 
-	SensorFusion fusion;
-	//fusion.toLinearAcceleration("..\\..\\data\\20110507-131228-JXL_SQ_trial2.csv");
-	fusion.toLinearAcceleration("..\\..\\data\\20110507-122357-JXL_ITDS_trial1.csv");
+	FindFilesRecursively(_T("C:\\Users\\evgeny\\Google Drive\\phd\\mobile research\\fall_detection\\falldetection_gless_4g_320_counts"), _T("*.csv"));
 
 //	fusion.readSensors("..\\..\\data\\ACC_2014_09_17_14_24_49.csv",
 //		"..\\..\\data\\GYR_2014_09_17_14_24_49.csv",
