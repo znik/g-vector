@@ -111,6 +111,7 @@ namespace {
 				short dtypes[] = { ACC_DATA, GYR_DATA, MAG_DATA };
 
 				bool toWrite = hasEstimate() || 0 != _g_estimation.get();
+
 				// start with zero timestamp
 				if (toWrite && 0 == base_ts)
 					base_ts = ts;
@@ -215,14 +216,15 @@ namespace {
 	};
 };
 
-void FindFilesRecursively(LPCTSTR lpFolder, LPCTSTR lpFilePattern)
+void FindFilesRecursively(LPCSTR lpFolder, LPCSTR lpFilePattern)
 {
-    TCHAR szFullPattern[MAX_PATH];
+    CHAR szFullPattern[MAX_PATH];
     WIN32_FIND_DATA FindFileData;
     HANDLE hFindFile;
-    // first we are going to process any subdirectories
-    PathCombine(szFullPattern, lpFolder, _T("*"));
-    hFindFile = FindFirstFile(szFullPattern, &FindFileData);
+    
+	// first we are going to process any subdirectories
+    PathCombineA(szFullPattern, lpFolder, "*");
+    hFindFile = FindFirstFileA(szFullPattern, &FindFileData);
     if(hFindFile != INVALID_HANDLE_VALUE)
     {
         do
@@ -232,16 +234,15 @@ void FindFilesRecursively(LPCTSTR lpFolder, LPCTSTR lpFilePattern)
                 // found a subdirectory; recurse into it
 				if (FindFileData.cFileName[0] == '.')
 					continue;
-                PathCombine(szFullPattern, lpFolder, FindFileData.cFileName);
+                PathCombineA(szFullPattern, lpFolder, FindFileData.cFileName);
                 FindFilesRecursively(szFullPattern, lpFilePattern);
-
             }
-        } while(FindNextFile(hFindFile, &FindFileData));
+        } while(FindNextFileA(hFindFile, &FindFileData));
         FindClose(hFindFile);
     }
     // now we are going to look for the matching files
-    PathCombine(szFullPattern, lpFolder, lpFilePattern);
-    hFindFile = FindFirstFile(szFullPattern, &FindFileData);
+    PathCombineA(szFullPattern, lpFolder, lpFilePattern);
+    hFindFile = FindFirstFileA(szFullPattern, &FindFileData);
     if(hFindFile != INVALID_HANDLE_VALUE)
     {
         do
@@ -249,19 +250,26 @@ void FindFilesRecursively(LPCTSTR lpFolder, LPCTSTR lpFilePattern)
             if(!(FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
             {
                 // found a file; do something with it
-                PathCombine(szFullPattern, lpFolder, FindFileData.cFileName);
-                _tprintf_s(_T("%s\n"), szFullPattern);
+                PathCombineA(szFullPattern, lpFolder, FindFileData.cFileName);
+                printf_s("%s\n", szFullPattern);
 				SensorFusion fusion;
 				fusion.toLinearAcceleration(szFullPattern);
             }
-        } while(FindNextFile(hFindFile, &FindFileData));
+        } while(FindNextFileA(hFindFile, &FindFileData));
         FindClose(hFindFile);
     }
 }
 
+
 int main(int /*argc*/, char** /*argv*/) {
 
-	FindFilesRecursively(_T("C:\\Users\\evgeny\\Google Drive\\phd\\mobile research\\fall_detection\\falldetection_gless_4g_320_counts"), _T("*.csv"));
+#if 0
+	FindFilesRecursively(
+		"C:\\Users\\evgeny\\Google Drive\\phd\\mobile research\\fall_detection\\falldetection_gless_4g_320_counts", "*.csv");
+#else
+	SensorFusion fusion;
+	fusion.toLinearAcceleration("..\\..\\data\\20110507-122357-JXL_ITDS_trial1.csv");
+#endif
 
 //	fusion.readSensors("..\\..\\data\\ACC_2014_09_17_14_24_49.csv",
 //		"..\\..\\data\\GYR_2014_09_17_14_24_49.csv",
