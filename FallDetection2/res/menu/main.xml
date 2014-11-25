@@ -1,0 +1,23 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	tools:context="ca.jvsh.fall.MainActivity" >
+
+	<item
+		android:id="@+id/menu_start"
+		android:icon="@drawable/ic_menu_play_clip"
+		android:showAsAction="ifRoom|withText"
+		android:title="@string/menu_start"
+		android:visible="true"/>
+	<item
+		android:id="@+id/menu_stop"
+		android:icon="@drawable/ic_menu_stop"
+		android:showAsAction="ifRoom|withText"
+		android:title="@string/menu_stop"
+		android:visible="false"/>
+	<item
+		android:id="@+id/menu_settings"
+		android:orderInCategory="100"
+		android:showAsAction="never"
+		android:title="@string/menu_settings"/>
+
+</menu>

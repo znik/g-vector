@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<string name="app_name">Fall Detection 2.0</string>
+
+	<!-- settings -->
+	<string name="menu_settings">Settings</string>
+
+	<!-- Start/stop menu -->
+	<string name="menu_start">Start</string>
+	<string name="menu_stop">Stop</string>
+
+	<!-- Toast messages -->
+	<string name="toast_started">Started</string>
+	<string name="toast_stopped">Stopped</string>
+
+	<!-- main activity interface -->
+	<string name="textview_status">"Status: "</string>
+	<!--
+    <string name="textview_max">"Max: "</string>
+    <string name="textview_min">"Min: "</string>
+    <string name="textview_range">"Range: "</string>
+	-->
+	<string name="textview_average">Average:</string>
+	<string name="textview_variance">Variance:</string>
+	<string name="textview_frequency">"Frequency: "</string>
+	<string name="textview_current_state">"Current state: "</string>
+	<!--
+    <string name="accelerometer">Accelerometer</string>
+    <string name="gyroscope">Gyroscope</string>
+	-->
+	<string name="talkback">Talkback</string>
+	<string name="beep">Beep on fall</string>
+	<string name="no_activity">no activity</string>
+
+	<!-- revise those strings -->
+	<string name="hello_world">Hello world!</string>
+	<string name="bind_service">Bind Service</string>
+	<string name="unbind_service">Unbind Service</string>
+	<string name="kill_process">Kill Process</string>
+	<string name="start_service">Start Service</string>
+	<string name="stop_service">Stop Service</string>
+	<string name="remote_service_started">Remote service has started</string>
+	<string name="remote_service_stopped">Remote service has stopped</string>
+	<string name="remote_service_connected">Connected to remote service</string>
+	<string name="remote_service_disconnected">Disconnected from remote service</string>
+	<string name="remote_service_unbind_disconn">Unbinding due to disconnect</string>
+	<string name="remote_service_binding">Binding.</string>
+	<string name="remote_service_unbinding">Unbinding.</string>
+	<string name="remote_call_failed">Failure calling remote service</string>
+	<string name="remote_service_label">Fall Logging Service</string>
+
+	<!-- Settings -->
+
+	<string name="activity_settings">Fall Detection Settings</string>
+	<string name="accelerometer_settings_title">Accelerometer Settings</string>
+	<string name="operation_level_setting">Operational level</string>
+	<string name="operation_level_setting_details">Some OS versions prevent using sensors when the screen is off; set the level that works for you</string>
+	<string name="operation_level_setting_title">Select operational level</string>
+	<string name="run_in_background">Normal (just try running in background)</string>
+	<string name="keep_screen_on">Screen on (keep screen dim)</string>
+	<string name="wake_up">Aggressive (wake up when I turn screen off)</string>
+
+</resources>
