@@ -17,6 +17,8 @@
 		android:icon="@drawable/ic_launcher"
 		android:label="@string/app_name"
 		android:theme="@style/AppTheme" >
+
+		<!-- Main Android Activity, which is being used to start/stop the Fall Detection Service -->
 		<activity
 			android:name=".MainActivity"
 			android:label="@string/app_name"
@@ -28,31 +30,30 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
+
+		<!-- Activity to set application settings -->
 		<activity
 			android:name="SettingsActivity"
 			android:label="@string/menu_settings"
 			android:screenOrientation="sensorPortrait" >
 		</activity>
 
+		<!-- Foreground service that will detect falls -->
 		<service
 			android:name=".FallDetectionService"
+			android:exported="false"
 			android:process=":remote" >
 			<intent-filter>
 
-				<!--
-                     These are the interfaces supported by the service, which
-                     you can bind to.
-				-->
+				<!-- Interface that is supported by our service and we can bind to -->
 				<action android:name="ca.jvsh.fall.IFallDetectionService" />
 
-				<!--
-                     This is an action code you can use to select the service
-                     without explicitly supplying the implementation class.
-				-->
+				<!-- Action code that we are using to select the service without explicitly supplying the implementation class -->
 				<action android:name="ca.jvsh.fall.FALL_DETECTION_SERVICE" />
 			</intent-filter>
 		</service>
 
+		<!-- Class that starts our service on boot (if setting is set) -->
 		<receiver
 			android:name=".OnBootReceiver"
 			android:enabled="true"
