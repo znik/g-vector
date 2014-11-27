@@ -247,5 +247,4 @@ proguard/
 *.iws
 .idea/
 FallDetection2/gen/ca/jvsh/fall/R.java
-FallDetection2/gen/ca/jvsh/fall/R.java
 FallDetection2/gen/ca/jvsh/fall/IFallDetectionServiceCallback.java

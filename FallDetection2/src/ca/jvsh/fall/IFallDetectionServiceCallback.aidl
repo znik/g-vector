@@ -9,5 +9,9 @@ oneway interface IFallDetectionServiceCallback {
     /**
      * Called when the service has a new value for you.
      */
-    void sensorChanged(double resultant, long timestamp);
+    void updateStats(double average, double variance, double frequency);
+    /**
+     * Called when fall is detected.
+     */
+    void fallMessage(String fallMsg);
 }

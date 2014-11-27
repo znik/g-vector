@@ -47,14 +47,24 @@ case INTERFACE_TRANSACTION:
 reply.writeString(DESCRIPTOR);
 return true;
 }
-case TRANSACTION_sensorChanged:
+case TRANSACTION_updateStats:
 {
 data.enforceInterface(DESCRIPTOR);
 double _arg0;
 _arg0 = data.readDouble();
-long _arg1;
-_arg1 = data.readLong();
-this.sensorChanged(_arg0, _arg1);
+double _arg1;
+_arg1 = data.readDouble();
+double _arg2;
+_arg2 = data.readDouble();
+this.updateStats(_arg0, _arg1, _arg2);
+return true;
+}
+case TRANSACTION_fallMessage:
+{
+data.enforceInterface(DESCRIPTOR);
+java.lang.String _arg0;
+_arg0 = data.readString();
+this.fallMessage(_arg0);
 return true;
 }
 }
@@ -78,24 +88,45 @@ return DESCRIPTOR;
 /**
      * Called when the service has a new value for you.
      */
-@Override public void sensorChanged(double resultant, long timestamp) throws android.os.RemoteException
+@Override public void updateStats(double average, double variance, double frequency) throws android.os.RemoteException
 {
 android.os.Parcel _data = android.os.Parcel.obtain();
 try {
 _data.writeInterfaceToken(DESCRIPTOR);
-_data.writeDouble(resultant);
-_data.writeLong(timestamp);
-mRemote.transact(Stub.TRANSACTION_sensorChanged, _data, null, android.os.IBinder.FLAG_ONEWAY);
+_data.writeDouble(average);
+_data.writeDouble(variance);
+_data.writeDouble(frequency);
+mRemote.transact(Stub.TRANSACTION_updateStats, _data, null, android.os.IBinder.FLAG_ONEWAY);
+}
+finally {
+_data.recycle();
+}
+}
+/**
+     * Called when fall is detected.
+     */
+@Override public void fallMessage(java.lang.String fallMsg) throws android.os.RemoteException
+{
+android.os.Parcel _data = android.os.Parcel.obtain();
+try {
+_data.writeInterfaceToken(DESCRIPTOR);
+_data.writeString(fallMsg);
+mRemote.transact(Stub.TRANSACTION_fallMessage, _data, null, android.os.IBinder.FLAG_ONEWAY);
 }
 finally {
 _data.recycle();
 }
 }
 }
-static final int TRANSACTION_sensorChanged = (android.os.IBinder.FIRST_CALL_TRANSACTION + 0);
+static final int TRANSACTION_updateStats = (android.os.IBinder.FIRST_CALL_TRANSACTION + 0);
+static final int TRANSACTION_fallMessage = (android.os.IBinder.FIRST_CALL_TRANSACTION + 1);
 }
 /**
      * Called when the service has a new value for you.
      */
-public void sensorChanged(double resultant, long timestamp) throws android.os.RemoteException;
+public void updateStats(double average, double variance, double frequency) throws android.os.RemoteException;
+/**
+     * Called when fall is detected.
+     */
+public void fallMessage(java.lang.String fallMsg) throws android.os.RemoteException;
 }

@@ -20,7 +20,7 @@
 			android:id="@+id/textView_status"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="@string/no_activity" />
+			android:text="@string/service_stopped" />
 	</LinearLayout>
 
 	<LinearLayout
@@ -74,35 +74,6 @@
 			android:layout_height="wrap_content" />
 	</LinearLayout>
 
-	<CheckBox
-		android:id="@+id/checkBoxTalkback"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:text="@string/talkback" />
-
-	<CheckBox
-		android:id="@+id/checkBoxBeep"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:text="@string/beep" />
-
-	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_margin="10dp" >
-
-		<TextView
-			android:id="@+id/textViewState"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="@string/textview_current_state" />
-
-		<TextView
-			android:id="@+id/textView_state"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content" />
-	</LinearLayout>
-
 	<EditText
 		android:id="@+id/editTextLog"
 		android:layout_width="match_parent"
@@ -114,6 +85,7 @@
 		android:ems="10"
 		android:focusable="false"
 		android:focusableInTouchMode="false"
+		android:gravity="top"
 		android:inputType="textMultiLine"
 		android:isScrollContainer="true"
 		android:longClickable="false"

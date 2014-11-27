@@ -3,62 +3,55 @@
 
 	<string name="app_name">Fall Detection 2.0</string>
 
-	<!-- settings -->
-	<string name="menu_settings">Settings</string>
+	<!-- Status messages -->
+	<string name="service_started">Fall Detection service is running</string>
+	<string name="service_stopped">Fall Detection service is stopped</string>
 
-	<!-- Start/stop menu -->
-	<string name="menu_start">Start</string>
-	<string name="menu_stop">Stop</string>
-
-	<!-- Toast messages -->
-	<string name="toast_started">Started</string>
-	<string name="toast_stopped">Stopped</string>
-
-	<!-- main activity interface -->
+	<!-- main activity strings -->
 	<string name="textview_status">"Status: "</string>
-	<!--
-    <string name="textview_max">"Max: "</string>
-    <string name="textview_min">"Min: "</string>
-    <string name="textview_range">"Range: "</string>
-	-->
 	<string name="textview_average">Average:</string>
 	<string name="textview_variance">Variance:</string>
 	<string name="textview_frequency">"Frequency: "</string>
-	<string name="textview_current_state">"Current state: "</string>
-	<!--
-    <string name="accelerometer">Accelerometer</string>
-    <string name="gyroscope">Gyroscope</string>
-	-->
-	<string name="talkback">Talkback</string>
-	<string name="beep">Beep on fall</string>
-	<string name="no_activity">no activity</string>
 
 	<!-- revise those strings -->
-	<string name="hello_world">Hello world!</string>
 	<string name="bind_service">Bind Service</string>
 	<string name="unbind_service">Unbind Service</string>
 	<string name="kill_process">Kill Process</string>
-	<string name="start_service">Start Service</string>
-	<string name="stop_service">Stop Service</string>
-	<string name="remote_service_started">Remote service has started</string>
-	<string name="remote_service_stopped">Remote service has stopped</string>
 	<string name="remote_service_connected">Connected to remote service</string>
 	<string name="remote_service_disconnected">Disconnected from remote service</string>
-	<string name="remote_service_unbind_disconn">Unbinding due to disconnect</string>
+	<!-- <string name="remote_service_unbind_disconn">Unbinding due to disconnect</string> -->
 	<string name="remote_service_binding">Binding.</string>
-	<string name="remote_service_unbinding">Unbinding.</string>
-	<string name="remote_call_failed">Failure calling remote service</string>
-	<string name="remote_service_label">Fall Logging Service</string>
+	<string name="remote_service_unbinding">Unbinding.</string><!-- <string name="remote_call_failed">Failure calling remote service</string> -->
+	<!-- <string name="remote_service_label">Fall Logging Service</string> -->
+
+
+	<!-- menu -->
+	<string name="menu_start">Start</string>
+	<string name="menu_stop">Stop</string>
+	<string name="menu_settings">Settings</string>
 
 	<!-- Settings -->
+	<!-- General -->
+	<string name="general_settings">General Settings</string>
+	<string name="restart_on_boot">Restart on boot</string>
+	<string name="if_service_was_started">if service was started</string>
 
-	<string name="activity_settings">Fall Detection Settings</string>
-	<string name="accelerometer_settings_title">Accelerometer Settings</string>
-	<string name="operation_level_setting">Operational level</string>
-	<string name="operation_level_setting_details">Some OS versions prevent using sensors when the screen is off; set the level that works for you</string>
-	<string name="operation_level_setting_title">Select operational level</string>
-	<string name="run_in_background">Normal (just try running in background)</string>
-	<string name="keep_screen_on">Screen on (keep screen dim)</string>
-	<string name="wake_up">Aggressive (wake up when I turn screen off)</string>
+	<!-- Fall detection -->
+	<string name="fall_detection_settings">Fall Detection Settings</string>
+	<string name="talkback">Talkback</string>
+	<string name="enable_voice_notifications">enable voice notifications</string>
+	<string name="beep">Beep on fall</string>
+	<string name="enable_beeping_if_fall_occurs">enable beeping if fall occurs</string>
+	<string name="save_linear_acceleration_sensor_data_to_file">save linear acceleration sensor data to file</string>
+	<string name="log_sensor_data">Log sensor data</string>
+
+	<!-- User interface -->
+	<string name="user_interface_settings">User Interface settings</string>
+	<string name="update_average_variance_and_frequency_values">Update average, variance and frequency values</string>
+	<string name="show_data">Show data</string>
+	<string name="show_detected_falls_in_the_log_window">Show detected falls in the log window</string>
+	<string name="falls_log">Falls log</string>
+	<string name="number_of_fall_messages_to_keep">number of fall messages to keep</string>
+	<string name="log_messages_max">Log messages max</string>
 
 </resources>

@@ -1,12 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-	<PreferenceCategory android:title="FOO" >
+	<!-- General application and service settings -->
+	<PreferenceCategory android:title="@string/general_settings" >
+		<CheckBoxPreference
+			android:defaultValue="true"
+			android:key="restartOnBoot"
+			android:summary="@string/if_service_was_started"
+			android:title="@string/restart_on_boot" />
+	</PreferenceCategory>
+
+	<!-- Fall Detection service settings -->
+	<PreferenceCategory android:title="@string/fall_detection_settings" >
 		<CheckBoxPreference
 			android:defaultValue="false"
-			android:key="checkBoxPref"
-			android:summary="click this litle box"
-			android:title="check it out" />
+			android:key="talkback"
+			android:summary="@string/enable_voice_notifications"
+			android:title="@string/talkback" />
+		<CheckBoxPreference
+			android:defaultValue="true"
+			android:key="beep"
+			android:summary="@string/enable_beeping_if_fall_occurs"
+			android:title="@string/beep" />
+		<CheckBoxPreference
+			android:defaultValue="false"
+			android:key="logsensor"
+			android:summary="@string/save_linear_acceleration_sensor_data_to_file"
+			android:title="@string/log_sensor_data" />
+	</PreferenceCategory>
+
+	<!-- Main activity settings -->
+	<PreferenceCategory android:title="@string/user_interface_settings" >
+		<CheckBoxPreference
+			android:defaultValue="true"
+			android:key="showdata"
+			android:summary="@string/update_average_variance_and_frequency_values"
+			android:title="@string/show_data" />
+		<CheckBoxPreference
+			android:defaultValue="true"
+			android:key="fallslog"
+			android:summary="@string/show_detected_falls_in_the_log_window"
+			android:title="@string/falls_log" />
 	</PreferenceCategory>
 
 </PreferenceScreen>

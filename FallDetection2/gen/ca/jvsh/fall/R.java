@@ -28,20 +28,16 @@ public final class R {
         public static final int ic_menu_stop=0x7f020003;
     }
     public static final class id {
-        public static final int checkBoxBeep=0x7f090009;
-        public static final int checkBoxTalkback=0x7f090008;
-        public static final int editTextLog=0x7f09000c;
-        public static final int menu_settings=0x7f09000f;
-        public static final int menu_start=0x7f09000d;
-        public static final int menu_stop=0x7f09000e;
+        public static final int editTextLog=0x7f090008;
+        public static final int menu_settings=0x7f09000b;
+        public static final int menu_start=0x7f090009;
+        public static final int menu_stop=0x7f09000a;
         public static final int textViewAverage=0x7f090002;
         public static final int textViewFrequency=0x7f090006;
-        public static final int textViewState=0x7f09000a;
         public static final int textViewStatus=0x7f090000;
         public static final int textViewVariance=0x7f090004;
         public static final int textView_average=0x7f090003;
         public static final int textView_frequency=0x7f090007;
-        public static final int textView_state=0x7f09000b;
         public static final int textView_status=0x7f090001;
         public static final int textView_variance=0x7f090005;
     }
@@ -52,66 +48,59 @@ public final class R {
         public static final int main=0x7f080000;
     }
     public static final class string {
-        public static final int accelerometer_settings_title=0x7f06001e;
-        /**  Settings 
-         */
-        public static final int activity_settings=0x7f06001d;
         public static final int app_name=0x7f060000;
-        public static final int beep=0x7f06000c;
-        public static final int bind_service=0x7f06000f;
+        public static final int beep=0x7f060017;
         /**  revise those strings 
          */
-        public static final int hello_world=0x7f06000e;
-        public static final int keep_screen_on=0x7f060023;
-        public static final int kill_process=0x7f060011;
-        /**  settings 
+        public static final int bind_service=0x7f060007;
+        public static final int enable_beeping_if_fall_occurs=0x7f060018;
+        public static final int enable_voice_notifications=0x7f060016;
+        /**  Fall detection 
          */
-        public static final int menu_settings=0x7f060001;
-        /**  Start/stop menu 
+        public static final int fall_detection_settings=0x7f060014;
+        public static final int falls_log=0x7f06001f;
+        /**  Settings 
+ General 
          */
-        public static final int menu_start=0x7f060002;
-        public static final int menu_stop=0x7f060003;
-        public static final int no_activity=0x7f06000d;
-        public static final int operation_level_setting=0x7f06001f;
-        public static final int operation_level_setting_details=0x7f060020;
-        public static final int operation_level_setting_title=0x7f060021;
-        public static final int remote_call_failed=0x7f06001b;
-        public static final int remote_service_binding=0x7f060019;
-        public static final int remote_service_connected=0x7f060016;
-        public static final int remote_service_disconnected=0x7f060017;
-        public static final int remote_service_label=0x7f06001c;
-        public static final int remote_service_started=0x7f060014;
-        public static final int remote_service_stopped=0x7f060015;
-        public static final int remote_service_unbind_disconn=0x7f060018;
-        public static final int remote_service_unbinding=0x7f06001a;
-        public static final int run_in_background=0x7f060022;
-        public static final int start_service=0x7f060012;
-        public static final int stop_service=0x7f060013;
-        /** 
-    <string name="accelerometer">Accelerometer</string>
-    <string name="gyroscope">Gyroscope</string>
-	
+        public static final int general_settings=0x7f060011;
+        public static final int if_service_was_started=0x7f060013;
+        public static final int kill_process=0x7f060009;
+        public static final int log_messages_max=0x7f060021;
+        public static final int log_sensor_data=0x7f06001a;
+        public static final int menu_settings=0x7f060010;
+        /**  <string name="remote_call_failed">Failure calling remote service</string> 
+ <string name="remote_service_label">Fall Logging Service</string> 
+ menu 
          */
-        public static final int talkback=0x7f06000b;
-        /** 
-    <string name="textview_max">"Max: "</string>
-    <string name="textview_min">"Min: "</string>
-    <string name="textview_range">"Range: "</string>
-	
+        public static final int menu_start=0x7f06000e;
+        public static final int menu_stop=0x7f06000f;
+        public static final int number_of_fall_messages_to_keep=0x7f060020;
+        /**  <string name="remote_service_unbind_disconn">Unbinding due to disconnect</string> 
          */
-        public static final int textview_average=0x7f060007;
-        public static final int textview_current_state=0x7f06000a;
-        public static final int textview_frequency=0x7f060009;
-        /**  main activity interface 
+        public static final int remote_service_binding=0x7f06000c;
+        public static final int remote_service_connected=0x7f06000a;
+        public static final int remote_service_disconnected=0x7f06000b;
+        public static final int remote_service_unbinding=0x7f06000d;
+        public static final int restart_on_boot=0x7f060012;
+        public static final int save_linear_acceleration_sensor_data_to_file=0x7f060019;
+        /**  Status messages 
          */
-        public static final int textview_status=0x7f060006;
-        public static final int textview_variance=0x7f060008;
-        /**  Toast messages 
+        public static final int service_started=0x7f060001;
+        public static final int service_stopped=0x7f060002;
+        public static final int show_data=0x7f06001d;
+        public static final int show_detected_falls_in_the_log_window=0x7f06001e;
+        public static final int talkback=0x7f060015;
+        public static final int textview_average=0x7f060004;
+        public static final int textview_frequency=0x7f060006;
+        /**  main activity strings 
          */
-        public static final int toast_started=0x7f060004;
-        public static final int toast_stopped=0x7f060005;
-        public static final int unbind_service=0x7f060010;
-        public static final int wake_up=0x7f060024;
+        public static final int textview_status=0x7f060003;
+        public static final int textview_variance=0x7f060005;
+        public static final int unbind_service=0x7f060008;
+        public static final int update_average_variance_and_frequency_values=0x7f06001c;
+        /**  User interface 
+         */
+        public static final int user_interface_settings=0x7f06001b;
     }
     public static final class style {
         /** 
